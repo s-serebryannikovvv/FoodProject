@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	//Timer 
 
-	const deadline = '2021-03-19'; //Дата дедлайна
+	const deadline = '2021-04-21'; //Дата дедлайна
 
 	function getTimeRemaining(endtime) {
 		const t = Date.parse(endtime) - Date.parse(new Date()), //парсим строчное значение даты в миллисекунды и вычитаем из даты в данный момент времени (получаем разницу)
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		};
 	}
 
-	function getZero(num) {
+	function getZero(num) { //добавляем 0 если цифра однозначная
 		if (num >= 0 && num < 10) {
 			return `0${num}`;
 		} else {
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 
-	function setClock(selector, endtime) {
+	function setClock(selector, endtime) { //получаем id элементов 
 		const timer = document.querySelector(selector),
 			days = timer.querySelector('#days'),
 			hours = timer.querySelector('#hours'),
@@ -86,10 +86,10 @@ document.addEventListener('DOMContentLoaded', () => {
 			seconds = timer.querySelector('#seconds'),
 			timeInterval = setInterval(updateClock, 1000);
 
-		updateClock();
+		updateClock(); // функцию вызываем вручную, что бы корректно отображалась, а не ждала 1сек. (выше)
 
 		function updateClock() {
-			const t = getTimeRemaining(endtime);
+			const t = getTimeRemaining(endtime); // получаем оставшееся время
 
 			days.innerHTML = getZero(t.days);
 			hours.innerHTML = getZero(t.hours);
@@ -106,4 +106,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	setClock('.timer', deadline);
 
+
+	//modal
+
+	const modalTrigger = document.querySelectorAll('[data-modal]'),
+		modal = document.querySelector('.modal'),
+		modalCloseBtn = document.querySelector('[data-close]');
+
+	modalTrigger.forEach(btn => {
+		btn.addEventListener('click', () => {
+			modal.classList.add('show');
+			modal.classList.remove('hide');
+			// modal.classList.toggle('show');
+			document.body.style.overflow = 'hidden';
+		});
+	})
+
+	function closeModal() {
+		modal.classList.add('hide');
+		modal.classList.remove('show');
+		// modal.classList.toggle('show');
+		document.body.style.overflow = '';
+	}
+
+	modalCloseBtn.addEventListener('click', closeModal);
+
+	modal.addEventListener('click', (e) => {
+		if (e.target === modal) {
+			closeModal();
+		}
+	});
+	document.addEventListener('keydown', (e) => {
+		if (e.code === 'Escape' && modal.classList.contains('show')) {
+			closeModal();
+		}
+	});
 });
